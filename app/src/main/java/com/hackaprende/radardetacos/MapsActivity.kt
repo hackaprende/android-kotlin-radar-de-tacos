@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 
@@ -116,15 +115,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        for (taqueria in taquerias) {
-            val tacoPosition = LatLng(taqueria.latitude, taqueria.longitude)
-            val tacoMarker = MarkerOptions().icon(tacoIcon).position(tacoPosition).title(taqueria.name)
-            mMap.addMarker(tacoMarker)
-        }
-
         val userLatLng = LatLng(userLocation.latitude, userLocation.longitude)
         val userMarker = MarkerOptions().position(userLatLng)
         mMap.addMarker(userMarker)
+
+        for (taqueria in taquerias) {
+            val tacoPosition = LatLng(taqueria.latitude, taqueria.longitude)
+            val tacoLocation = Location("")
+            tacoLocation.latitude = taqueria.latitude
+            tacoLocation.longitude = taqueria.longitude
+            val distanceToTaco = tacoLocation.distanceTo(userLocation)
+            val tacoMarkerOptions = MarkerOptions().icon(tacoIcon).position(tacoPosition).title(taqueria.name).snippet("A $distanceToTaco m")
+            mMap.addMarker(tacoMarkerOptions)
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 13.0f))
     }
 

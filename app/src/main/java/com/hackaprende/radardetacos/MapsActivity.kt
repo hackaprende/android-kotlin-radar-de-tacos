@@ -92,12 +92,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun showLocationPermissionRationaleDialog() {
-        val dialog = AlertDialog.Builder(this).setTitle("Need location permission")
-                .setMessage("You need to accept this permission to use the app")
+        val dialog = AlertDialog.Builder(this)
+                .setTitle(R.string.need_location_permission_dialog_title)
+                .setMessage(R.string.need_location_permission_dialog_message)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                             LOCATION_PERMISSION_REQUEST_CODE)
-                }.setNegativeButton(android.R.string.no) { _, _ ->
+                }.setNegativeButton(R.string.no) { _, _ ->
                     finish()
                 }
         dialog.show()

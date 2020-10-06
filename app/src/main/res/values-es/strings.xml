@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="distance_to_format">A %.2f m</string>
+    <string name="need_location_permission_dialog_title">Necesitas permiso de ubicación</string>
+    <string name="need_location_permission_dialog_message">Debes aceptar este permiso para usar la app.</string>
+</resources>

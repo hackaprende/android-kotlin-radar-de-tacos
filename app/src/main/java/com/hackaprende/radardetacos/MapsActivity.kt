@@ -19,8 +19,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 private const val LOCATION_PERMISSION_REQUEST_CODE = 2000
+private const val DEFAULT_MAP_SCALE = 13.0f
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -28,11 +30,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val taquerias = mutableListOf<Taqueria>()
     private lateinit var tacoIcon: BitmapDescriptor
     private val userLocation = Location("")
+    private lateinit var myLocationButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
+        myLocationButton = findViewById(R.id.my_location_button)
         taquerias.add(Taqueria("Tacos de Asada", -33.954044, 151.241283))
         taquerias.add(Taqueria("Tacos de Pastor", -33.967154, 151.264715))
         taquerias.add(Taqueria("Tacos de Cochinita", -33.9438208,151.2436039))
@@ -113,6 +117,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -126,11 +131,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             tacoLocation.latitude = taqueria.latitude
             tacoLocation.longitude = taqueria.longitude
             val distanceToTaco = tacoLocation.distanceTo(userLocation)
-            val tacoMarkerOptions = MarkerOptions().icon(tacoIcon).position(tacoPosition).title(taqueria.name).snippet("A $distanceToTaco m")
+            val tacoMarkerOptions = MarkerOptions()
+                    .icon(tacoIcon)
+                    .position(tacoPosition)
+                    .title(taqueria.name)
+                    .snippet(getString(R.string.distance_to_format, distanceToTaco))
             mMap.addMarker(tacoMarkerOptions)
         }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 13.0f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, DEFAULT_MAP_SCALE))
+
+        myLocationButton.setOnClickListener {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, DEFAULT_MAP_SCALE))
+        }
     }
 
     private fun getTacoIcon(): BitmapDescriptor {
